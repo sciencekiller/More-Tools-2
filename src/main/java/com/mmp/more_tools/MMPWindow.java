@@ -17,6 +17,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
+import java.util.Random;
 
 public class MMPWindow {
     //TODO 模拟键盘粘贴函数(By ChatGPT)
@@ -59,6 +60,19 @@ public class MMPWindow {
         robot.keyPress(KeyEvent.VK_ENTER);
         robot.keyRelease(KeyEvent.VK_CONTROL);
         robot.keyRelease(KeyEvent.VK_ENTER);
+    }
+
+    //TODO 模拟键盘按下空格(By ChatGPT)
+    public static void Press_Space() {
+        Robot robot = null;
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace();
+        }
+        assert robot != null;
+        robot.keyPress(KeyEvent.VK_SPACE);
+        robot.keyRelease(KeyEvent.VK_SPACE);
     }
 
     //TODO 写入字符串到剪切板函数(By ChatGPT)
@@ -164,7 +178,7 @@ public class MMPWindow {
         //TODO 创建开始按钮行动
         StartButton.setOnAction(actionEvent -> {
             int times = Integer.parseInt(NumberInputVariable);
-            int spacing = Integer.parseInt(SpacingInputVariable);
+            float spacing = Float.parseFloat(SpacingInputVariable);
             boolean WordMode;
             WordMode = Objects.equals(WordModeComboBox.getValue(), "文本框模式");
             int SendMode;
@@ -200,7 +214,51 @@ public class MMPWindow {
         MMPStage.show();//显示
     }
 
-    public static void StartSend(String messages, int times, int spacing, boolean wordmode, int sendmode, int software) {
-
+    //TODO 发送函数
+    public static void StartSend(String messages, int times, float spacing, boolean WordMode, int SendMode, int software) {
+        try {
+            Thread.currentThread().wait(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (WordMode) {
+            //复制消息
+            writeStringToClipboard(messages);
+        }
+        int Space = 0;
+        boolean Up_Or_Down = false;//false 上升
+        for (int i = 0; i < times; i++) {
+            if (SendMode == 2) {
+                for (int j = 0; j < Space; j++) {
+                    Press_Space();
+                }
+                if (Space == 20) Up_Or_Down = true;
+                if (Space == 0) Up_Or_Down = false;
+                if (Up_Or_Down) {
+                    Space -= 2;
+                } else {
+                    Space += 2;
+                }
+            }
+            if (SendMode == 3) {
+                Random random = new Random();
+                Space = random.nextInt(20);
+                for (int j = 0; j < Space; j++) {
+                    Press_Space();
+                }
+            }
+            //粘贴
+            Press_Ctrl_And_V();
+            if (software == 1) {
+                Press_Enter();//按Enter
+            } else {
+                Press_Ctrl_And_Enter();//按Ctrl+Enter
+            }
+            try {
+                Thread.currentThread().wait((long) spacing * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
