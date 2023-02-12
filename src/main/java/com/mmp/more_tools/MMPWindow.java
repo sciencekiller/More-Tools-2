@@ -5,11 +5,69 @@ package com.mmp.more_tools;
 
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.KeyEvent;
+import java.util.Objects;
+
 public class MMPWindow {
+    //TODO 模拟键盘粘贴函数(By ChatGPT)
+    public static void Press_Ctrl_And_V() {
+        Robot robot = null;
+        try {
+            robot = new Robot();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assert robot != null;
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_V);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+    }
+
+    //TODO 模拟键盘按下Enter(By ChatGPT)
+    public static void Press_Enter() {
+        Robot robot = null;
+        try {
+            robot = new Robot();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assert robot != null;
+        robot.keyPress(KeyEvent.VK_ENTER);
+    }
+
+    //TODO 模拟键盘按下Ctrl+Enter(By ChatGPT)
+    public static void Press_Ctrl_And_Enter() {
+        Robot robot = null;
+        try {
+            robot = new Robot();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assert robot != null;
+        robot.keyPress(KeyEvent.VK_CONTROL);
+        robot.keyPress(KeyEvent.VK_ENTER);
+        robot.keyRelease(KeyEvent.VK_CONTROL);
+        robot.keyRelease(KeyEvent.VK_ENTER);
+    }
+
+    //TODO 写入字符串到剪切板函数(By ChatGPT)
+    public static void writeStringToClipboard(String str) {
+        StringSelection stringSelection = new StringSelection(str);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }
+
     //TODO 定义变量
     static String WordInputVariable = "";//文本输入变量
     static String NumberInputVariable = "";//次数输入变量
@@ -105,7 +163,26 @@ public class MMPWindow {
 
         //TODO 创建开始按钮行动
         StartButton.setOnAction(actionEvent -> {
-
+            int times = Integer.parseInt(NumberInputVariable);
+            int spacing = Integer.parseInt(SpacingInputVariable);
+            boolean WordMode;
+            WordMode = Objects.equals(WordModeComboBox.getValue(), "文本框模式");
+            int SendMode;
+            if (Objects.equals(SendModeComboBox.getValue(), "直列式")) {
+                SendMode = 1;
+            } else if (Objects.equals(SendModeComboBox.getValue(), "波浪式")) {
+                SendMode = 2;
+            } else {
+                SendMode = 3;
+            }
+            //"微信", "QQ", "钉钉", "其他按Enter发送的软件", "其他按Ctrl+Enter发送的软件"
+            int Software;
+            if (Objects.equals(SoftwareComboBox.getValue(), "微信") || Objects.equals(SoftwareComboBox.getValue(), "QQ") || Objects.equals(SoftwareComboBox.getValue(), "钉钉") || Objects.equals(SoftwareComboBox.getValue(), "其他按Enter发送的软件")) {
+                Software = 1;
+            } else {
+                Software = 2;
+            }
+            StartSend(WordInputVariable, times, spacing, WordMode, SendMode, Software);
         });
 
         //TODO 创建退出按钮行动
