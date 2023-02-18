@@ -10,6 +10,7 @@ module com.mmp.more_tools {
     requires org.kordamp.bootstrapfx.core;
     requires java.desktop;
     requires com.alibaba.fastjson2;
+    requires jintellitype;
 
     opens com.mmp.more_tools to javafx.fxml;
     exports com.mmp.more_tools;

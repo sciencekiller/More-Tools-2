@@ -19,7 +19,12 @@ import java.awt.event.KeyEvent;
 import java.util.Objects;
 import java.util.Random;
 
+import com.melloware.jintellitype.*;
+
 public class MMPWindow {
+    private static final int GLOBAL_HOT_KEY_ESC = 0;
+    private static final int GLOBAL_HOT_KEY_QUIT = 1;
+
     //TODO 模拟键盘粘贴函数(By ChatGPT)
     public static void Press_Ctrl_And_V() {
         Robot robot = null;
@@ -91,6 +96,13 @@ public class MMPWindow {
     public static void More_Messages() {
         //TODO 定义Stage
         Stage MMPStage = new Stage();
+
+        JIntellitype.getInstance().registerHotKey(GLOBAL_HOT_KEY_QUIT, JIntellitype.MOD_ALT, 'Q');
+        JIntellitype.getInstance().addHotKeyListener(i -> {
+            if (i == GLOBAL_HOT_KEY_QUIT) {
+                MMPStage.close();
+            }
+        });
 
         //TODO 定义GridPane
         GridPane pane = new GridPane();
@@ -241,10 +253,21 @@ public class MMPWindow {
         MMPStage.setTitle("More Messages Ver2.0.0");//设置标题
         MMPStage.getIcons().add(new Image("file:src/main/resources/images/MMP-ICON.jpg"));
         MMPStage.show();//显示
+        JIntellitype.getInstance().unregisterHotKey(GLOBAL_HOT_KEY_QUIT);
+    }
+
+    //TODO 结束线程函数
+    public static void StopSend() {
     }
 
     //TODO 发送函数
     public static void StartSend(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
+        JIntellitype.getInstance().registerHotKey(GLOBAL_HOT_KEY_ESC, 0, 27);
+        JIntellitype.getInstance().addHotKeyListener(i -> {
+            if (i == GLOBAL_HOT_KEY_ESC) {
+                StopSend();
+            }
+        });
         synchronized (Thread.currentThread()) {
             try {
                 Thread.currentThread().notifyAll();
@@ -253,7 +276,6 @@ public class MMPWindow {
                 e.printStackTrace();
             }
         }
-        System.out.println(WordMode + "\n");
         if (WordMode) {
             //复制消息
             writeStringToClipboard(Messages);
@@ -296,6 +318,7 @@ public class MMPWindow {
                 }
             }
         }
+        JIntellitype.getInstance().unregisterHotKey(GLOBAL_HOT_KEY_ESC);
     }
 
     //TODO 定义发送线程，保证UI线程不会堵塞
