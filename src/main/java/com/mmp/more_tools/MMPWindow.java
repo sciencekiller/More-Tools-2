@@ -103,8 +103,23 @@ public class MMPWindow {
         AboutAlert.setHeaderText("More Messages Version" + Main.MMPVersion);
         AboutAlert.setContentText("感谢您使用More Messages Version" + Main.MMPVersion + "\n本软件由版权属于程添宇(Sciencekill)\n!本软件为More Tools中的一个组件!\nCopyright 2023 Sciencekill");
 
+        Alert NoNumberInputAlert = new Alert(Alert.AlertType.ERROR);
+        NoNumberInputAlert.setTitle("未输入次数");
+        NoNumberInputAlert.setHeaderText("您未输入次数!");
+        NoNumberInputAlert.setContentText("请检查是否输入了次数，如果是误报错，请截图反馈");
+
+        Alert NoSpacingInputAlert = new Alert(Alert.AlertType.ERROR);
+        NoSpacingInputAlert.setTitle("未输入间隔");
+        NoSpacingInputAlert.setHeaderText("您未输入间隔!");
+        NoSpacingInputAlert.setContentText("请检查是否输入了间隔，如果是误报错，请截图反馈");
+
+        Alert NoMessageInputAlert = new Alert(Alert.AlertType.ERROR);
+        NoMessageInputAlert.setTitle("未输入文本");
+        NoMessageInputAlert.setHeaderText("您未输入文本!");
+        NoMessageInputAlert.setContentText("请检查是否输入了文本，如果是误报错，请截图反馈");
+
         //TODO 定义标签
-        Label TextLabel = new Label("请输入文本:     ");//文本
+        Label WordLabel = new Label("请输入文本:     ");//文本
         Label NumberLabel = new Label("请输入次数:     ");//次数
         Label WordModeLabel = new Label("请选择文本模式:");//文本模式
         Label SendModeLabel = new Label("请选择发送模式:");//发送方式
@@ -112,9 +127,9 @@ public class MMPWindow {
         Label SpacingLabel = new Label("请输入间隔时间(s):");//间隔
 
         //TODO 定义文本输入框
-        TextField TextEntry = new TextField();
-        TextEntry.setText(WordInputVariable);
-        TextEntry.setPrefWidth(500);
+        TextField WordInput = new TextField();
+        WordInput.setText(WordInputVariable);
+        WordInput.setPrefWidth(500);
 
         //TODO 定义次数输入框
         TextField NumberInput = new TextField();
@@ -159,8 +174,8 @@ public class MMPWindow {
         AboutButton.setPrefWidth(100);//设置宽度100
 
         //TODO 添加组件
-        pane.add(TextLabel, 0, 0);
-        pane.add(TextEntry, 1, 0);
+        pane.add(WordLabel, 0, 0);
+        pane.add(WordInput, 1, 0);
         pane.add(NumberLabel, 0, 1);
         pane.add(NumberInput, 1, 1);
         pane.add(WordModeLabel, 0, 2);
@@ -177,7 +192,17 @@ public class MMPWindow {
 
         //TODO 创建开始按钮行动
         StartButton.setOnAction(actionEvent -> {
+            NumberInputVariable = NumberInput.getText();
+            if (Objects.equals(NumberInputVariable, "")) {
+                NoNumberInputAlert.showAndWait();
+                return;
+            }
             int times = Integer.parseInt(NumberInputVariable);
+            SpacingInputVariable = SpacingInput.getText();
+            if (Objects.equals(SpacingInputVariable, "")) {
+                NoSpacingInputAlert.showAndWait();
+                return;
+            }
             float spacing = Float.parseFloat(SpacingInputVariable);
             boolean WordMode;
             WordMode = Objects.equals(WordModeComboBox.getValue(), "文本框模式");
@@ -189,12 +214,18 @@ public class MMPWindow {
             } else {
                 SendMode = 3;
             }
+
             //"微信", "QQ", "钉钉", "其他按Enter发送的软件", "其他按Ctrl+Enter发送的软件"
             int Software;
             if (Objects.equals(SoftwareComboBox.getValue(), "微信") || Objects.equals(SoftwareComboBox.getValue(), "QQ") || Objects.equals(SoftwareComboBox.getValue(), "钉钉") || Objects.equals(SoftwareComboBox.getValue(), "其他按Enter发送的软件")) {
                 Software = 1;
             } else {
                 Software = 2;
+            }
+            WordInputVariable = WordInput.getText();
+            if (Objects.equals(WordInputVariable, "") && WordMode) {
+                NoMessageInputAlert.showAndWait();
+                return;
             }
             StartSend(WordInputVariable, times, spacing, WordMode, SendMode, Software);
         });
