@@ -124,21 +124,18 @@ public class MMPWindow {
         Label WordModeLabel = new Label("请选择文本模式:");//文本模式
         Label SendModeLabel = new Label("请选择发送模式:");//发送方式
         Label SoftWareLabel = new Label("请选择您的软件:");//软件
-        Label SpacingLabel = new Label("请输入间隔时间(s):");//间隔
+        Label SpacingLabel = new Label("请输入间隔时间:");//间隔
 
         //TODO 定义文本输入框
-        TextField WordInput = new TextField();
-        WordInput.setText(WordInputVariable);
+        TextField WordInput = new TextField("Welcome To More Messages 2.0~");
         WordInput.setPrefWidth(500);
 
         //TODO 定义次数输入框
-        TextField NumberInput = new TextField();
-        NumberInput.setText(NumberInputVariable);
+        TextField NumberInput = new TextField("100");
         NumberInput.setPrefWidth(500);
 
         //TODO 定义间隔输入框
-        TextField SpacingInput = new TextField();
-        SpacingInput.setText(SpacingInputVariable);
+        TextField SpacingInput = new TextField("0.1");
         SpacingInput.setPrefWidth(500);
 
         //TODO 定义文字模式下拉框
@@ -146,7 +143,7 @@ public class MMPWindow {
         WordModeComboBox.getItems().addAll("文本框模式", "剪切板模式");//定义子成员
         WordModeComboBox.setPlaceholder(new Label("这里空空如也..."));//为空时显示
         WordModeComboBox.setEditable(false);//设置为不可编辑
-        WordModeComboBox.setValue("文本模式");//设置默认值
+        WordModeComboBox.setValue("文本框模式");//设置默认值
         WordModeComboBox.setPrefWidth(500);//设置宽度500
 
         //TODO 定义发送方式下拉框
@@ -197,13 +194,13 @@ public class MMPWindow {
                 NoNumberInputAlert.showAndWait();
                 return;
             }
-            int times = Integer.parseInt(NumberInputVariable);
+            int Times = Integer.parseInt(NumberInputVariable);
             SpacingInputVariable = SpacingInput.getText();
             if (Objects.equals(SpacingInputVariable, "")) {
                 NoSpacingInputAlert.showAndWait();
                 return;
             }
-            float spacing = Float.parseFloat(SpacingInputVariable);
+            float Spacing = Float.parseFloat(SpacingInputVariable);
             boolean WordMode;
             WordMode = Objects.equals(WordModeComboBox.getValue(), "文本框模式");
             int SendMode;
@@ -223,12 +220,12 @@ public class MMPWindow {
                 Software = 2;
             }
             WordInputVariable = WordInput.getText();
-            System.out.println(WordInputVariable);
             if (Objects.equals(WordInputVariable, "") && WordMode) {
                 NoMessageInputAlert.showAndWait();
                 return;
             }
-            StartSend(WordInputVariable, times, spacing, WordMode, SendMode, Software);
+            SendThread NewSendThread = new SendThread(WordInputVariable, Times, Spacing, WordMode, SendMode, Software);
+            NewSendThread.start();
         });
 
         //TODO 创建退出按钮行动
@@ -247,19 +244,23 @@ public class MMPWindow {
     }
 
     //TODO 发送函数
-    public static void StartSend(String messages, int times, float spacing, boolean WordMode, int SendMode, int software) {
-        try {
-            Thread.currentThread().wait(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public static void StartSend(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
+        synchronized (Thread.currentThread()) {
+            try {
+                Thread.currentThread().notifyAll();
+                Thread.currentThread().wait(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        System.out.println(WordMode + "\n");
         if (WordMode) {
             //复制消息
-            writeStringToClipboard(messages);
+            writeStringToClipboard(Messages);
         }
         int Space = 0;
         boolean Up_Or_Down = false;//false 上升
-        for (int i = 0; i < times; i++) {
+        for (int i = 0; i < Times; i++) {
             if (SendMode == 2) {
                 for (int j = 0; j < Space; j++) {
                     Press_Space();
@@ -281,16 +282,47 @@ public class MMPWindow {
             }
             //粘贴
             Press_Ctrl_And_V();
-            if (software == 1) {
+            if (Software == 1) {
                 Press_Enter();//按Enter
             } else {
                 Press_Ctrl_And_Enter();//按Ctrl+Enter
             }
-            try {
-                Thread.currentThread().wait((long) spacing * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            synchronized (Thread.currentThread()) {
+                try {
+                    Thread.currentThread().notifyAll();
+                    Thread.currentThread().wait((long) (Spacing * 1000));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+        }
+    }
+
+    //TODO 定义发送线程，保证UI线程不会堵塞
+    static class SendThread extends Thread {
+        //定义变量
+        String Messages;
+        int Times;
+        float Spacing;
+        boolean WordMode;
+        int SendMode;
+        int Software;
+
+        //构建方法
+        public SendThread(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
+            //复制传参
+            this.Messages = Messages;
+            this.Times = Times;
+            this.Spacing = Spacing;
+            this.WordMode = WordMode;
+            this.SendMode = SendMode;
+            this.Software = Software;
+        }
+
+        //重写run启动方法
+        @Override
+        public void run() {
+            StartSend(WordInputVariable, Times, Spacing, WordMode, SendMode, Software);
         }
     }
 }
