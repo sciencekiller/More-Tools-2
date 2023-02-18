@@ -12,6 +12,6 @@
 
 ### 目前还在重写中，作业稍微有点多，可能会比较慢
 
-### 目前写完了More Messages，已经可以用了
+### 目前写完了More Messages，已经可以用了，欢迎下载
 
 Copyright 2023 Sciencekill 
