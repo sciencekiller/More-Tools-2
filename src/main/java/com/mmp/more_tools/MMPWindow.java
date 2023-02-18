@@ -223,6 +223,7 @@ public class MMPWindow {
                 Software = 2;
             }
             WordInputVariable = WordInput.getText();
+            System.out.println(WordInputVariable);
             if (Objects.equals(WordInputVariable, "") && WordMode) {
                 NoMessageInputAlert.showAndWait();
                 return;
