@@ -23,7 +23,6 @@ import com.melloware.jintellitype.*;
 
 public class MMPWindow {
     private static final int GLOBAL_HOT_KEY_ESC = 0;
-    private static final int GLOBAL_HOT_KEY_QUIT = 1;
 
     //TODO 模拟键盘粘贴函数(By ChatGPT)
     public static void Press_Ctrl_And_V() {
@@ -96,13 +95,6 @@ public class MMPWindow {
     public static void More_Messages() {
         //TODO 定义Stage
         Stage MMPStage = new Stage();
-
-        JIntellitype.getInstance().registerHotKey(GLOBAL_HOT_KEY_QUIT, JIntellitype.MOD_ALT, 'Q');
-        JIntellitype.getInstance().addHotKeyListener(i -> {
-            if (i == GLOBAL_HOT_KEY_QUIT) {
-                MMPStage.close();
-            }
-        });
 
         //TODO 定义GridPane
         GridPane pane = new GridPane();
@@ -253,7 +245,6 @@ public class MMPWindow {
         MMPStage.setTitle("More Messages Ver2.0.0");//设置标题
         MMPStage.getIcons().add(new Image("file:src/main/resources/images/MMP-ICON.jpg"));
         MMPStage.show();//显示
-        JIntellitype.getInstance().unregisterHotKey(GLOBAL_HOT_KEY_QUIT);
     }
 
     //TODO 结束线程函数
