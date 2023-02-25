@@ -11,7 +11,8 @@ module com.mmp.more_tools {
     requires java.desktop;
     requires com.alibaba.fastjson2;
     requires jintellitype;
+    requires org.apache.commons.lang3;
 
-    opens com.mmp.more_tools to javafx.fxml;
-    exports com.mmp.more_tools;
+    opens com.mt.more_tools to javafx.fxml;
+    exports com.mt.more_tools;
 }

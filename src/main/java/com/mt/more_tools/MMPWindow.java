@@ -1,8 +1,9 @@
 //TODO More Messages窗口
-package com.mmp.more_tools;
+package com.mt.more_tools;
 
 //TODO 导入
 
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -16,6 +17,7 @@ import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Random;
 
@@ -90,6 +92,13 @@ public class MMPWindow {
     static String WordInputVariable = "";//文本输入变量
     static String NumberInputVariable = "";//次数输入变量
     static String SpacingInputVariable = "";//间隔输入变量
+    static Alert SendOver = new Alert(Alert.AlertType.INFORMATION);
+    static Alert SendInterrupted = new Alert(Alert.AlertType.ERROR);
+    static Alert AboutAlert = new Alert(Alert.AlertType.INFORMATION);
+    static Alert NoNumberInputAlert = new Alert(Alert.AlertType.ERROR);
+    static Alert NoSpacingInputAlert = new Alert(Alert.AlertType.ERROR);
+    static Alert NoMessageInputAlert = new Alert(Alert.AlertType.ERROR);
+    static Alert InputErrorAlert = new Alert(Alert.AlertType.ERROR);
 
     //TODO 生成窗口More Messages
     public static void More_Messages() {
@@ -102,25 +111,33 @@ public class MMPWindow {
         pane.setHgap(15);
 
         //TODO 定义弹窗
-        Alert AboutAlert = new Alert(Alert.AlertType.INFORMATION);
         AboutAlert.setTitle("关于");
         AboutAlert.setHeaderText("More Messages Version" + Main.MMPVersion);
         AboutAlert.setContentText("感谢您使用More Messages Version" + Main.MMPVersion + "\n本软件由版权属于程添宇(Sciencekill)\n!本软件为More Tools中的一个组件!\nCopyright 2023 Sciencekill");
 
-        Alert NoNumberInputAlert = new Alert(Alert.AlertType.ERROR);
         NoNumberInputAlert.setTitle("未输入次数");
         NoNumberInputAlert.setHeaderText("您未输入次数!");
         NoNumberInputAlert.setContentText("请检查是否输入了次数，如果是误报错，请截图反馈");
 
-        Alert NoSpacingInputAlert = new Alert(Alert.AlertType.ERROR);
         NoSpacingInputAlert.setTitle("未输入间隔");
         NoSpacingInputAlert.setHeaderText("您未输入间隔!");
         NoSpacingInputAlert.setContentText("请检查是否输入了间隔，如果是误报错，请截图反馈");
 
-        Alert NoMessageInputAlert = new Alert(Alert.AlertType.ERROR);
         NoMessageInputAlert.setTitle("未输入文本");
         NoMessageInputAlert.setHeaderText("您未输入文本!");
         NoMessageInputAlert.setContentText("请检查是否输入了文本，如果是误报错，请截图反馈");
+
+        SendInterrupted.setTitle("终止");
+        SendInterrupted.setHeaderText("用户强制终止了发送");
+        SendInterrupted.setContentText("已将发送强制停止!");
+
+        SendOver.setTitle("完成!");
+        SendOver.setHeaderText("发送完成!");
+        SendOver.setContentText("已发送完成!");
+
+        InputErrorAlert.setTitle("输入错误");
+        InputErrorAlert.setHeaderText("您的输入有误");
+        InputErrorAlert.setContentText("请仔细检查输入，如果是误报错，请截图反馈");
 
         //TODO 定义标签
         Label WordLabel = new Label("请输入文本:     ");//文本
@@ -195,16 +212,28 @@ public class MMPWindow {
         StartButton.setOnAction(actionEvent -> {
             NumberInputVariable = NumberInput.getText();
             if (Objects.equals(NumberInputVariable, "")) {
-                NoNumberInputAlert.showAndWait();
+                Alerts.NoNumberInputAlert();
                 return;
             }
-            int Times = Integer.parseInt(NumberInputVariable);
+            int Times = 0;
+            try {
+                Times = Integer.parseInt(NumberInputVariable);
+            } catch (Exception e) {
+                Alerts.InputErrorAlert();
+                e.printStackTrace();
+            }
             SpacingInputVariable = SpacingInput.getText();
             if (Objects.equals(SpacingInputVariable, "")) {
-                NoSpacingInputAlert.showAndWait();
+                Alerts.NoSpacingInputAlert();
                 return;
             }
-            float Spacing = Float.parseFloat(SpacingInputVariable);
+            float Spacing = 0;
+            try {
+                Spacing = Float.parseFloat(SpacingInputVariable);
+            } catch (Exception e) {
+                Alerts.InputErrorAlert();
+                e.printStackTrace();
+            }
             boolean WordMode;
             WordMode = Objects.equals(WordModeComboBox.getValue(), "文本框模式");
             int SendMode;
@@ -225,7 +254,7 @@ public class MMPWindow {
             }
             WordInputVariable = WordInput.getText();
             if (Objects.equals(WordInputVariable, "") && WordMode) {
-                NoMessageInputAlert.showAndWait();
+                Alerts.NoMessageInputAlert();
                 return;
             }
             SendThread NewSendThread = new SendThread(WordInputVariable, Times, Spacing, WordMode, SendMode, Software);
@@ -236,10 +265,13 @@ public class MMPWindow {
         ExitButton.setOnAction(actionEvent -> MMPStage.close());
 
         //TODO 创建关于按钮行动
-        AboutButton.setOnAction(actionEvent -> AboutAlert.showAndWait());
+        AboutButton.setOnAction(actionEvent -> Alerts.MMPAboutAlert());
 
         //TODO 配置场景
         Scene MMPScene = new Scene(pane, 600, 400);//定义场景
+        URL url_css = Main.class.getClassLoader().getResource("Style.css");
+        assert url_css != null;
+        MMPScene.getStylesheets().add(url_css.toExternalForm());
         MMPStage.setScene(MMPScene);//设置场景
         MMPStage.setResizable(false);//设置不可调整大小
         MMPStage.setTitle("More Messages Ver2.0.0");//设置标题
@@ -247,22 +279,31 @@ public class MMPWindow {
         MMPStage.show();//显示
     }
 
-    //TODO 结束线程函数
+    //TODO 打断线程函数
     public static void StopSend() {
+        ThreadGroup CurrentGroup = Thread.currentThread().getThreadGroup();
+        int ThreadNum = CurrentGroup.activeCount();
+        Thread[] NowThreads = new Thread[ThreadNum];
+        CurrentGroup.enumerate(NowThreads);
+        for (int i = 0; i < ThreadNum; i++) {
+            String name = NowThreads[i].getName();
+            if (name.equals("SendThread")) {
+                NowThreads[i].interrupt();
+            }
+        }
     }
 
     //TODO 发送函数
     public static void StartSend(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
+        if (Times == 0 || Spacing == 0) {
+            return;
+        }
         JIntellitype.getInstance().registerHotKey(GLOBAL_HOT_KEY_ESC, 0, 27);
-        JIntellitype.getInstance().addHotKeyListener(i -> {
-            if (i == GLOBAL_HOT_KEY_ESC) {
-                StopSend();
-            }
-        });
+        JIntellitype.getInstance().addHotKeyListener(j -> StopSend());
         synchronized (Thread.currentThread()) {
             try {
                 Thread.currentThread().notifyAll();
-                Thread.currentThread().wait(1000);
+                Thread.currentThread().wait(1000);//休眠1秒
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -273,7 +314,10 @@ public class MMPWindow {
         }
         int Space = 0;
         boolean Up_Or_Down = false;//false 上升
-        for (int i = 0; i < Times; i++) {
+        if (SendMode == 2 || SendMode == 3) {
+            Spacing += 5000;
+        }
+        for (int i = 0; i < Times && !Thread.currentThread().isInterrupted(); i++) {
             if (SendMode == 2) {
                 for (int j = 0; j < Space; j++) {
                     Press_Space();
@@ -305,9 +349,15 @@ public class MMPWindow {
                     Thread.currentThread().notifyAll();
                     Thread.currentThread().wait((long) (Spacing * 1000));
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Thread.currentThread().interrupt();
                 }
             }
+        }
+        if (!Thread.currentThread().isInterrupted()) {
+            //正常结束
+            Platform.runLater(Alerts::SendOver);
+        } else {
+            Platform.runLater(Alerts::SendInterrupted);
         }
         JIntellitype.getInstance().unregisterHotKey(GLOBAL_HOT_KEY_ESC);
     }
@@ -324,6 +374,7 @@ public class MMPWindow {
 
         //构建方法
         public SendThread(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
+            super("SendThread");
             //复制传参
             this.Messages = Messages;
             this.Times = Times;

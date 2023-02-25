@@ -1,0 +1,5 @@
+.button {
+    -fx-min-height: 30;
+    -fx-min-width: 80;
+    -fx-background-color: #337ab7;
+}

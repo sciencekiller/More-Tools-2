@@ -1,11 +1,10 @@
 //TODO Main窗口
-package com.mmp.more_tools;
+package com.mt.more_tools;
 
 //TODO 导入
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -16,21 +15,23 @@ import javafx.stage.Stage;
 
 import java.awt.Desktop;
 import java.net.URI;
+import java.net.URL;
+
+import org.kordamp.bootstrapfx.BootstrapFX;
+import org.kordamp.bootstrapfx.scene.layout.Panel;
+
+import static com.mt.more_tools.Main.*;
+
 
 public class MainWindow extends Application {
     //TODO 重写start方法，生成窗口
     @Override
     public void start(Stage primaryStage) {
+        WriteLog("Start Main window", "INFO");
         //TODO 定义GridPane
         GridPane pane = new GridPane();
         pane.setHgap(30);
         pane.setVgap(15);
-
-        //TODO 定义弹窗
-        Alert AboutAlert = new Alert(Alert.AlertType.INFORMATION);
-        AboutAlert.setTitle("关于");
-        AboutAlert.setHeaderText("More Tools Version" + Main.MainVersion);
-        AboutAlert.setContentText("感谢您使用More Tools Version" + Main.MainVersion + "\n本软件由版权属于程添宇(Sciencekill)\nCopyright 2023 Sciencekill");
 
         //TODO 定义标签
         Label WelcomeLabel = new Label("欢迎来到More Tools");
@@ -79,29 +80,43 @@ public class MainWindow extends Application {
             try {
                 desktop.browse(new URI("https://sciencekill.netlify.app"));
             } catch (Exception e) {
-                e.printStackTrace();
+                Alerts.ErrorAlert();
+                WriteLog(e, "Failed to open web browser");
+                System.exit(1);
             }
         });
 
         //TODO 创建退出按钮行动
         ExitButton.setOnAction(actionEvent -> {
+            WriteLog("Software exit", "INFO");
             System.exit(0);//退出
         });
 
         //TODO 创建关于按钮行动
-        AboutButton.setOnAction(actionEvent -> AboutAlert.showAndWait());
+        AboutButton.setOnAction(actionEvent -> {
+            Alerts.MainAboutAlert();
+            WriteLog("Show about page", "INFO");
+        });
 
         //TODO 创建场景
+        WriteLog("Creat scene", "INFO");
         Scene primaryScene = new Scene(pane, 600, 400);//定义场景
+        WriteLog("Get Stylesheet", "INFO");
+        URL url_css = MainWindow.class.getClassLoader().getResource("Style.css");
+        assert url_css != null;
+        primaryScene.getStylesheets().add(url_css.toExternalForm());
         primaryStage.setScene(primaryScene);//设置场景
         primaryStage.setResizable(false);//设置不可调整大小
         primaryStage.setTitle("More Tools Ver2.0.0");//设置标题
+        WriteLog("Get icon", "INFO");
         primaryStage.getIcons().add(new Image("file:src/main/resources/images/MT-ICON.jpg"));//设置图标
+        WriteLog("Show main window", "INFO");
         primaryStage.show();//显示
     }
 
     //TODO 构建启动More Messages方法
     public void RunMoreMessages() {
+        WriteLog("Start More-Messages", "INFO");
         MMPWindow.More_Messages();
     }
 }
