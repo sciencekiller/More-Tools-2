@@ -165,10 +165,13 @@ public class MMPWindow {
         //TODO 定义按钮
         Button ExitButton = new Button("退出");//退出按钮
         ExitButton.setPrefWidth(100);//设置宽度100
+        ExitButton.setBackground(bg);
         Button StartButton = new Button("开始");//开始按钮
         StartButton.setPrefWidth(100);//设置宽度100
+        StartButton.setBackground(bg);
         Button AboutButton = new Button("关于");//关于按钮
         AboutButton.setPrefWidth(100);//设置宽度100
+        AboutButton.setBackground(bg);
 
         //TODO 添加组件
         pane.add(WordLabel, 0, 0);
@@ -257,7 +260,7 @@ public class MMPWindow {
         Random random = new Random();
         img = random.nextInt(11);
         img++;
-        Image i = new Image("file:src/main/resources/images/backgrounds/background-" + img + ".jpg");
+        Image i = new Image(TempFolder + "/MT/Temp/background-" + img + ".jpg");
         WriteLog("Get background image: background-" + img + ".jpg", "INFO", "mmp");
         BackgroundImage bgi = new BackgroundImage(i, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         Background bg = new Background(bgi);
@@ -272,7 +275,7 @@ public class MMPWindow {
         MMPStage.setResizable(false);//设置不可调整大小
         MMPStage.setTitle("More Messages Ver2.0.0");//设置标题
         WriteLog("Get more message icon", "INFO", "mmp");
-        MMPStage.getIcons().add(new Image("file:src/main/resources/images/MMP-ICON.jpg"));
+        MMPStage.getIcons().add(new Image(TempFolder + "/MT/Temp/MMP-ICON.jpg"));
         WriteLog("Show more message window", "INFO", "mmp");
         MMPStage.show();//显示
     }

@@ -102,17 +102,15 @@ public class MainWindow extends Application {
         });
 
         //TODO 创建场景
-        int img;
+        WriteLog("Creat primary scene", "INFO");
+        Scene primaryScene = new Scene(pane, 600, 400);//定义场景
         Random random = new Random();
-        img = random.nextInt(11);
+        int img = random.nextInt(11);
         img++;
-        Image i = new Image("file:src/main/resources/images/backgrounds/background-" + img + ".jpg");
-        WriteLog("Get background image: background-" + img + ".jpg", "INFO");
+        Image i = new Image(TempFolder + "/MT/Temp/background-" + img + ".jpg");
         BackgroundImage bgi = new BackgroundImage(i, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         Background bg = new Background(bgi);
         pane.setBackground(bg);
-        WriteLog("Creat primary scene", "INFO");
-        Scene primaryScene = new Scene(pane, 600, 400);//定义场景
         URL url_css = Main.class.getClassLoader().getResource("Style.css");
         assert url_css != null;
         primaryScene.getStylesheets().add(url_css.toExternalForm());
@@ -121,7 +119,7 @@ public class MainWindow extends Application {
         primaryStage.setResizable(false);//设置不可调整大小
         primaryStage.setTitle("More Tools Ver2.0.0");//设置标题
         WriteLog("Get primary icon", "INFO");
-        primaryStage.getIcons().add(new Image("file:src/main/resources/images/MT-ICON.jpg"));//设置图标
+        primaryStage.getIcons().add(new Image(TempFolder + "/MT/Temp/MT-ICON.jpg"));//设置图标
         WriteLog("Show main window", "INFO");
         primaryStage.show();//显示
     }

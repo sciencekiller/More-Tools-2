@@ -24,6 +24,7 @@ public class Main {
     public static String MMPVersion;//More Messages Part版本
 
     static FileWriter writer = null;
+    public static String TempFolder;
 
     public static void WriteLog(Exception error, String log, String from) {
         String level = "ERROR";
@@ -45,6 +46,26 @@ public class Main {
 
     public static void WriteLog(String log, String level, String from) {
         LogWriter(log, level, from);
+    }
+
+    public static void ReadImageFromStream(InputStream inStream, String name) throws IOException {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+        //创建一个Buffer字符串
+        byte[] buffer = new byte[1024 * 512];
+        //每次读取的字符串长度，如果为-1，代表全部读取完毕
+        int len;
+        //使用一个输入流从buffer里把数据读取出来
+        while ((len = inStream.read(buffer)) != -1) {
+            //用输出流往buffer里写入数据，中间参数代表从哪个位置开始读，len代表读取的长度
+            outStream.write(buffer, 0, len);
+        }
+        //关闭输入流
+        inStream.close();
+        byte[] data = outStream.toByteArray();
+        File imagefile = new File(TempFolder + "/MT/Temp/" + name + ".jpg");
+        FileOutputStream fos = new FileOutputStream(imagefile);
+        fos.write(data);
+        inStream.close();
     }
 
     public static void LogWriter(String log, String level, String from) {
@@ -72,14 +93,19 @@ public class Main {
         }
         assert temp != null;
         String AbsolutePath = temp.getAbsolutePath();
-        String TempFolder = AbsolutePath.substring(0, AbsolutePath.lastIndexOf(File.separator));
+        TempFolder = AbsolutePath.substring(0, AbsolutePath.lastIndexOf(File.separator));
         Date date = new Date();
         SimpleDateFormat Formatter = new SimpleDateFormat("dd-MM-yyyy HH mm ss");
         String Time = Formatter.format(date);
         File dir = new File(TempFolder + "/MT/Logs");
         boolean mkdir = false;
+        boolean mktmp = false;
         if (!dir.exists()) {
             mkdir = dir.mkdirs();
+        }
+        File tp = new File(TempFolder + "/MT/Temp");
+        if (!tp.exists()) {
+            mktmp = tp.mkdirs();
         }
         File LoadFile = new File(TempFolder + "/MT/Logs/Log-" + Time + ".log");
         boolean mkfil = false;
@@ -91,7 +117,7 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (mkdir) WriteLog("Make dictionary successfully", "SUCCESS");
+        if (mkdir && mktmp) WriteLog("Make dictionary successfully", "SUCCESS");
         else WriteLog("Dictionary exists", "INFO");
         if (mkfil) WriteLog("Make file successfully", "SUCCESS");
         else WriteLog("File exists", "INFO");
@@ -145,6 +171,32 @@ public class Main {
         }
         WriteLog("Main Version:" + MainVersion, "INFO");
         WriteLog("MMP Version:" + MMPVersion, "INFO");
+
+        for (int i = 1; i <= 11; i++) {
+            String Temp_Path = TempFolder + "/MT/Temp/background-" + i + ".jpg";
+            String path = "background-" + i + ".jpg";
+            File imgfile = new File(Temp_Path);
+            if (!imgfile.exists()) {
+                InputStream is = Main.class.getClassLoader().getResourceAsStream(path);
+                assert is != null;
+                ReadImageFromStream(is, "background-" + i);
+                is.close();
+            }
+        }
+        File MMP_Icon = new File(TempFolder + "/MT/Temp/MMP-ICON.jpg");
+        if (!MMP_Icon.exists()) {
+            InputStream is = Main.class.getClassLoader().getResourceAsStream("MMP-ICON.jpg");
+            assert is != null;
+            ReadImageFromStream(is, "MMP-ICON");
+            is.close();
+        }
+        File MT_Icon = new File(TempFolder + "/MT/Temp/MT-ICON.jpg");
+        if (!MT_Icon.exists()) {
+            InputStream is = Main.class.getClassLoader().getResourceAsStream("MT-ICON.jpg");
+            assert is != null;
+            ReadImageFromStream(is, "MT-ICON");
+            is.close();
+        }
 
         //TODO 启动主窗口
         Application.launch(MainWindow.class, args);
