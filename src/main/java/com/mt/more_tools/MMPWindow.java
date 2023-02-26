@@ -10,7 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.awt.*;
@@ -23,62 +24,68 @@ import java.util.Random;
 
 import com.melloware.jintellitype.*;
 
+import static com.mt.more_tools.Main.*;
+
 public class MMPWindow {
     private static final int GLOBAL_HOT_KEY_ESC = 0;
 
     //TODO 模拟键盘粘贴函数(By ChatGPT)
     public static void Press_Ctrl_And_V() {
-        Robot robot = null;
+        Robot robot;
         try {
             robot = new Robot();
         } catch (Exception e) {
-            e.printStackTrace();
+            WriteLog(e, "Failed to create robot", "mmp");
+            return;
         }
-        assert robot != null;
         robot.keyPress(KeyEvent.VK_CONTROL);
         robot.keyPress(KeyEvent.VK_V);
         robot.keyRelease(KeyEvent.VK_V);
         robot.keyRelease(KeyEvent.VK_CONTROL);
+        Main.WriteLog("Ctrl_And_V pressed", "INFO", "mmp");
     }
 
     //TODO 模拟键盘按下Enter(By ChatGPT)
     public static void Press_Enter() {
-        Robot robot = null;
+        Robot robot;
         try {
             robot = new Robot();
         } catch (Exception e) {
-            e.printStackTrace();
+            WriteLog(e, "Failed to create robot", "mmp");
+            return;
         }
-        assert robot != null;
         robot.keyPress(KeyEvent.VK_ENTER);
+        WriteLog("Enter pressed", "INFO", "mmp");
     }
 
     //TODO 模拟键盘按下Ctrl+Enter(By ChatGPT)
     public static void Press_Ctrl_And_Enter() {
-        Robot robot = null;
+        Robot robot;
         try {
             robot = new Robot();
         } catch (Exception e) {
-            e.printStackTrace();
+            WriteLog(e, "Failed to create robot", "mmp");
+            return;
         }
-        assert robot != null;
         robot.keyPress(KeyEvent.VK_CONTROL);
         robot.keyPress(KeyEvent.VK_ENTER);
         robot.keyRelease(KeyEvent.VK_CONTROL);
         robot.keyRelease(KeyEvent.VK_ENTER);
+        WriteLog("Ctrl_Enter pressed", "INFO", "mmp");
     }
 
     //TODO 模拟键盘按下空格(By ChatGPT)
     public static void Press_Space() {
-        Robot robot = null;
+        Robot robot;
         try {
             robot = new Robot();
         } catch (AWTException e) {
-            e.printStackTrace();
+            WriteLog(e, "Failed to create robot", "mmp");
+            return;
         }
-        assert robot != null;
         robot.keyPress(KeyEvent.VK_SPACE);
         robot.keyRelease(KeyEvent.VK_SPACE);
+        WriteLog("Space pressed", "INFO", "mmp");
     }
 
     //TODO 写入字符串到剪切板函数(By ChatGPT)
@@ -86,22 +93,17 @@ public class MMPWindow {
         StringSelection stringSelection = new StringSelection(str);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
+        WriteLog("Write " + str + " to clipboard", "INFO", "mmp");
     }
 
     //TODO 定义变量
     static String WordInputVariable = "";//文本输入变量
     static String NumberInputVariable = "";//次数输入变量
     static String SpacingInputVariable = "";//间隔输入变量
-    static Alert SendOver = new Alert(Alert.AlertType.INFORMATION);
-    static Alert SendInterrupted = new Alert(Alert.AlertType.ERROR);
-    static Alert AboutAlert = new Alert(Alert.AlertType.INFORMATION);
-    static Alert NoNumberInputAlert = new Alert(Alert.AlertType.ERROR);
-    static Alert NoSpacingInputAlert = new Alert(Alert.AlertType.ERROR);
-    static Alert NoMessageInputAlert = new Alert(Alert.AlertType.ERROR);
-    static Alert InputErrorAlert = new Alert(Alert.AlertType.ERROR);
 
     //TODO 生成窗口More Messages
     public static void More_Messages() {
+        WriteLog("Start more messages window", "INFO", "mmp");
         //TODO 定义Stage
         Stage MMPStage = new Stage();
 
@@ -110,54 +112,31 @@ public class MMPWindow {
         pane.setVgap(15);
         pane.setHgap(15);
 
-        //TODO 定义弹窗
-        AboutAlert.setTitle("关于");
-        AboutAlert.setHeaderText("More Messages Version" + Main.MMPVersion);
-        AboutAlert.setContentText("感谢您使用More Messages Version" + Main.MMPVersion + "\n本软件由版权属于程添宇(Sciencekill)\n!本软件为More Tools中的一个组件!\nCopyright 2023 Sciencekill");
-
-        NoNumberInputAlert.setTitle("未输入次数");
-        NoNumberInputAlert.setHeaderText("您未输入次数!");
-        NoNumberInputAlert.setContentText("请检查是否输入了次数，如果是误报错，请截图反馈");
-
-        NoSpacingInputAlert.setTitle("未输入间隔");
-        NoSpacingInputAlert.setHeaderText("您未输入间隔!");
-        NoSpacingInputAlert.setContentText("请检查是否输入了间隔，如果是误报错，请截图反馈");
-
-        NoMessageInputAlert.setTitle("未输入文本");
-        NoMessageInputAlert.setHeaderText("您未输入文本!");
-        NoMessageInputAlert.setContentText("请检查是否输入了文本，如果是误报错，请截图反馈");
-
-        SendInterrupted.setTitle("终止");
-        SendInterrupted.setHeaderText("用户强制终止了发送");
-        SendInterrupted.setContentText("已将发送强制停止!");
-
-        SendOver.setTitle("完成!");
-        SendOver.setHeaderText("发送完成!");
-        SendOver.setContentText("已发送完成!");
-
-        InputErrorAlert.setTitle("输入错误");
-        InputErrorAlert.setHeaderText("您的输入有误");
-        InputErrorAlert.setContentText("请仔细检查输入，如果是误报错，请截图反馈");
-
         //TODO 定义标签
         Label WordLabel = new Label("请输入文本:     ");//文本
+        WordLabel.setFont(Font.font("Kaiti", 14));
         Label NumberLabel = new Label("请输入次数:     ");//次数
+        NumberLabel.setFont(Font.font("Kaiti", 14));
         Label WordModeLabel = new Label("请选择文本模式:");//文本模式
+        WordModeLabel.setFont(Font.font("Kaiti", 14));
         Label SendModeLabel = new Label("请选择发送模式:");//发送方式
+        SendModeLabel.setFont(Font.font("Kaiti", 14));
         Label SoftWareLabel = new Label("请选择您的软件:");//软件
+        SoftWareLabel.setFont(Font.font("Kaiti", 14));
         Label SpacingLabel = new Label("请输入间隔时间:");//间隔
+        SpacingLabel.setFont(Font.font("Kaiti", 14));
 
         //TODO 定义文本输入框
         TextField WordInput = new TextField("Welcome To More Messages 2.0~");
-        WordInput.setPrefWidth(500);
+        WordInput.setPrefWidth(400);
 
         //TODO 定义次数输入框
         TextField NumberInput = new TextField("100");
-        NumberInput.setPrefWidth(500);
+        NumberInput.setPrefWidth(400);
 
         //TODO 定义间隔输入框
         TextField SpacingInput = new TextField("0.1");
-        SpacingInput.setPrefWidth(500);
+        SpacingInput.setPrefWidth(400);
 
         //TODO 定义文字模式下拉框
         ComboBox<String> WordModeComboBox = new ComboBox<>();//定义
@@ -165,7 +144,7 @@ public class MMPWindow {
         WordModeComboBox.setPlaceholder(new Label("这里空空如也..."));//为空时显示
         WordModeComboBox.setEditable(false);//设置为不可编辑
         WordModeComboBox.setValue("文本框模式");//设置默认值
-        WordModeComboBox.setPrefWidth(500);//设置宽度500
+        WordModeComboBox.setPrefWidth(400);//设置宽度400
 
         //TODO 定义发送方式下拉框
         ComboBox<String> SendModeComboBox = new ComboBox<>();//定义
@@ -173,7 +152,7 @@ public class MMPWindow {
         SendModeComboBox.setPlaceholder(new Label("这里空空如也..."));//为空时显示
         SendModeComboBox.setEditable(false);//设置为不可编辑
         SendModeComboBox.setValue("直列式");//设置默认值
-        SendModeComboBox.setPrefWidth(500);//设置宽度500
+        SendModeComboBox.setPrefWidth(400);//设置宽度400
 
         //TODO 定义软件下拉框
         ComboBox<String> SoftwareComboBox = new ComboBox<>();//定义
@@ -181,7 +160,7 @@ public class MMPWindow {
         SoftwareComboBox.setPlaceholder(new Label("这里空空如也"));//为空时显示
         SoftwareComboBox.setEditable(false);//设置不可编辑
         SoftwareComboBox.setValue("其他按Enter发送的软件");//设置默认值
-        SoftwareComboBox.setPrefWidth(500);//设置宽度500
+        SoftwareComboBox.setPrefWidth(400);//设置宽度400
 
         //TODO 定义按钮
         Button ExitButton = new Button("退出");//退出按钮
@@ -262,54 +241,84 @@ public class MMPWindow {
         });
 
         //TODO 创建退出按钮行动
-        ExitButton.setOnAction(actionEvent -> MMPStage.close());
+        ExitButton.setOnAction(actionEvent -> {
+            WriteLog("Exit more messages", "INFO", "mmp");
+            MMPStage.close();
+        });
 
         //TODO 创建关于按钮行动
-        AboutButton.setOnAction(actionEvent -> Alerts.MMPAboutAlert());
+        AboutButton.setOnAction(actionEvent -> {
+            WriteLog("Show about alert", "INFO", "mmp");
+            Alerts.MMPAboutAlert();
+        });
 
         //TODO 配置场景
+        int img;
+        Random random = new Random();
+        img = random.nextInt(11);
+        img++;
+        Image i = new Image("file:src/main/resources/images/backgrounds/background-" + img + ".jpg");
+        WriteLog("Get background image: background-" + img + ".jpg", "INFO", "mmp");
+        BackgroundImage bgi = new BackgroundImage(i, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background bg = new Background(bgi);
+        pane.setBackground(bg);
+        WriteLog("Create more message scene", "INFO", "mmp");
         Scene MMPScene = new Scene(pane, 600, 400);//定义场景
+        WriteLog("Get more message stylesheet", "INFO", "mmp");
         URL url_css = Main.class.getClassLoader().getResource("Style.css");
         assert url_css != null;
         MMPScene.getStylesheets().add(url_css.toExternalForm());
         MMPStage.setScene(MMPScene);//设置场景
         MMPStage.setResizable(false);//设置不可调整大小
         MMPStage.setTitle("More Messages Ver2.0.0");//设置标题
+        WriteLog("Get more message icon", "INFO", "mmp");
         MMPStage.getIcons().add(new Image("file:src/main/resources/images/MMP-ICON.jpg"));
+        WriteLog("Show more message window", "INFO", "mmp");
         MMPStage.show();//显示
     }
 
     //TODO 打断线程函数
     public static void StopSend() {
+        WriteLog("Ready to interrupt send", "WARNING", "mmp");
         ThreadGroup CurrentGroup = Thread.currentThread().getThreadGroup();
+        WriteLog("Get threads", "INFO", "mmp");
         int ThreadNum = CurrentGroup.activeCount();
         Thread[] NowThreads = new Thread[ThreadNum];
         CurrentGroup.enumerate(NowThreads);
         for (int i = 0; i < ThreadNum; i++) {
             String name = NowThreads[i].getName();
+            WriteLog("Find thread:" + name, "INFO", "mmp");
             if (name.equals("SendThread")) {
+                WriteLog("Find Send Thread", "INFO", "mmp");
                 NowThreads[i].interrupt();
+                WriteLog("Interrupted Send Thread", "SUCCESS", "mmp");
             }
         }
     }
 
     //TODO 发送函数
     public static void StartSend(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
+        WriteLog("Ready to send", "INFO", "mmp");
         if (Times == 0 || Spacing == 0) {
+            WriteLog("Find error value,return the method", "ERROR", "mmp");
             return;
         }
         JIntellitype.getInstance().registerHotKey(GLOBAL_HOT_KEY_ESC, 0, 27);
+        WriteLog("Register key ESC,value=" + GLOBAL_HOT_KEY_ESC, "INFO", "mmp");
         JIntellitype.getInstance().addHotKeyListener(j -> StopSend());
         synchronized (Thread.currentThread()) {
             try {
+                WriteLog("Sleep 1s", "INFO", "mmp");
                 Thread.currentThread().notifyAll();
                 Thread.currentThread().wait(1000);//休眠1秒
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Thread.currentThread().interrupt();
+                WriteLog(e, "Failed to sleep", "mmp");
             }
         }
         if (WordMode) {
             //复制消息
+            WriteLog("Copy message", "INFO", "mmp");
             writeStringToClipboard(Messages);
         }
         int Space = 0;
@@ -318,6 +327,7 @@ public class MMPWindow {
             Spacing += 5000;
         }
         for (int i = 0; i < Times && !Thread.currentThread().isInterrupted(); i++) {
+            WriteLog("Send number:" + i, "INFO", "mmp");
             if (SendMode == 2) {
                 for (int j = 0; j < Space; j++) {
                     Press_Space();
@@ -333,6 +343,7 @@ public class MMPWindow {
             if (SendMode == 3) {
                 Random random = new Random();
                 Space = random.nextInt(20);
+                WriteLog("Get random number:" + Space, "INFO", "mmp");
                 for (int j = 0; j < Space; j++) {
                     Press_Space();
                 }
@@ -346,20 +357,25 @@ public class MMPWindow {
             }
             synchronized (Thread.currentThread()) {
                 try {
+
                     Thread.currentThread().notifyAll();
                     Thread.currentThread().wait((long) (Spacing * 1000));
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     Thread.currentThread().interrupt();
+                    WriteLog(e, "Failed to sleep", "mmp");
                 }
             }
         }
         if (!Thread.currentThread().isInterrupted()) {
+            WriteLog("Send over without interrupt", "SUCCESS", "mmp");
             //正常结束
             Platform.runLater(Alerts::SendOver);
         } else {
+            WriteLog("Send over but interrupted", "FAILED", "mmp");
             Platform.runLater(Alerts::SendInterrupted);
         }
         JIntellitype.getInstance().unregisterHotKey(GLOBAL_HOT_KEY_ESC);
+        WriteLog("Unregister key ESC:" + GLOBAL_HOT_KEY_ESC, "INFO", "mmp");
     }
 
     //TODO 定义发送线程，保证UI线程不会堵塞
@@ -375,18 +391,26 @@ public class MMPWindow {
         //构建方法
         public SendThread(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
             super("SendThread");
+            WriteLog("Created SendThread", "SUCCESS", "mmp");
             //复制传参
             this.Messages = Messages;
+            WriteLog("Message:" + Messages, "INFO", "mmp");
             this.Times = Times;
+            WriteLog("Times:" + Times, "INFO", "mmp");
             this.Spacing = Spacing;
+            WriteLog("Spacing:" + Spacing, "INFO", "mmp");
             this.WordMode = WordMode;
+            WriteLog("WordMode:" + WordMode, "INFO", "mmp");
             this.SendMode = SendMode;
+            WriteLog("SendMode:" + SendMode, "INFO", "mmp");
             this.Software = Software;
+            WriteLog("Software:" + Software, "INFO", "mmp");
         }
 
         //重写run启动方法
         @Override
         public void run() {
+            WriteLog("Send thread started", "SUCCESS", "MMP");
             StartSend(WordInputVariable, Times, Spacing, WordMode, SendMode, Software);
         }
     }

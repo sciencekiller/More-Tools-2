@@ -9,13 +9,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-import java.awt.Desktop;
+import java.awt.*;
 import java.net.URI;
 import java.net.URL;
+import java.util.Random;
 
 import static com.mt.more_tools.Main.*;
 
@@ -24,7 +25,7 @@ public class MainWindow extends Application {
     //TODO 重写start方法，生成窗口
     @Override
     public void start(Stage primaryStage) {
-        WriteLog("Start Main window", "INFO");
+        WriteLog("Start main window", "INFO");
         //TODO 定义GridPane
         GridPane pane = new GridPane();
         pane.setHgap(30);
@@ -32,9 +33,10 @@ public class MainWindow extends Application {
 
         //TODO 定义标签
         Label WelcomeLabel = new Label("欢迎来到More Tools");
-        WelcomeLabel.setFont(Font.font("KaiTi", 20));
+        WelcomeLabel.setFont(Font.font("Kaiti", 24));
 
         Label SelectPartLabel = new Label("请选择组件:");
+        SelectPartLabel.setFont(Font.font("Kaiti", 18));
 
         //TODO 定义选择组件下拉框
         ComboBox<String> SelectPartCombobox = new ComboBox<>();//定义
@@ -44,16 +46,19 @@ public class MainWindow extends Application {
         SelectPartCombobox.setValue("More Messages");//设置默认值
         SelectPartCombobox.setPrefWidth(300);//设置宽度500
 
-
         //TODO 定义按钮
         Button StartButton = new Button("打开");//打开按钮
         StartButton.setPrefWidth(100);//设置宽度100
+        StartButton.setBackground(bg);
         Button ExitButton = new Button("退出");//退出按钮
         ExitButton.setPrefWidth(100);//设置宽度100
+        ExitButton.setBackground(bg);
         Button AboutButton = new Button("关于");//关于按钮
         AboutButton.setPrefWidth(100);//设置宽度100
+        AboutButton.setBackground(bg);
         Button WebsiteButton = new Button("官网");//官网按钮
         WebsiteButton.setPrefWidth(100);//设置宽度100
+        WebsiteButton.setBackground(bg);
 
         //TODO 添加组件
         pane.add(WelcomeLabel, 0, 0);
@@ -97,16 +102,25 @@ public class MainWindow extends Application {
         });
 
         //TODO 创建场景
-        WriteLog("Creat scene", "INFO");
+        int img;
+        Random random = new Random();
+        img = random.nextInt(11);
+        img++;
+        Image i = new Image("file:src/main/resources/images/backgrounds/background-" + img + ".jpg");
+        WriteLog("Get background image: background-" + img + ".jpg", "INFO");
+        BackgroundImage bgi = new BackgroundImage(i, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background bg = new Background(bgi);
+        pane.setBackground(bg);
+        WriteLog("Creat primary scene", "INFO");
         Scene primaryScene = new Scene(pane, 600, 400);//定义场景
-        WriteLog("Get Stylesheet", "INFO");
-        URL url_css = MainWindow.class.getClassLoader().getResource("Style.css");
+        URL url_css = Main.class.getClassLoader().getResource("Style.css");
         assert url_css != null;
         primaryScene.getStylesheets().add(url_css.toExternalForm());
+        WriteLog("Get primary Stylesheet", "INFO");
         primaryStage.setScene(primaryScene);//设置场景
         primaryStage.setResizable(false);//设置不可调整大小
         primaryStage.setTitle("More Tools Ver2.0.0");//设置标题
-        WriteLog("Get icon", "INFO");
+        WriteLog("Get primary icon", "INFO");
         primaryStage.getIcons().add(new Image("file:src/main/resources/images/MT-ICON.jpg"));//设置图标
         WriteLog("Show main window", "INFO");
         primaryStage.show();//显示
