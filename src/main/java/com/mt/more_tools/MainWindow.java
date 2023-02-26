@@ -17,9 +17,6 @@ import java.awt.Desktop;
 import java.net.URI;
 import java.net.URL;
 
-import org.kordamp.bootstrapfx.BootstrapFX;
-import org.kordamp.bootstrapfx.scene.layout.Panel;
-
 import static com.mt.more_tools.Main.*;
 
 
@@ -46,6 +43,7 @@ public class MainWindow extends Application {
         SelectPartCombobox.setEditable(false);//设置不可编辑
         SelectPartCombobox.setValue("More Messages");//设置默认值
         SelectPartCombobox.setPrefWidth(300);//设置宽度500
+
 
         //TODO 定义按钮
         Button StartButton = new Button("打开");//打开按钮
