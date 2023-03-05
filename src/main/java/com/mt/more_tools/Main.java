@@ -1,7 +1,7 @@
-//TODO 主类
+//主类
 package com.mt.more_tools;
 
-//TODO 导入
+//导入
 
 import javafx.application.Application;
 
@@ -18,13 +18,20 @@ import javafx.scene.paint.Paint;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class Main {
-    //TODO 定义变量
+    //定义变量
     public static Background bg;
     public static String MainVersion;//More Tools版本
     public static String MMPVersion;//More Messages Part版本
 
     static FileWriter writer = null;
     public static String TempFolder;
+
+    public static String mmp_Messages;
+    public static int mmp_Times;
+    public static float mmp_Spacing;
+    public static boolean mmp_WordMode;
+    public static int mmp_SendMode;
+    public static int mmp_Software;
 
     public static void WriteLog(Exception error, String log, String from) {
         String level = "ERROR";
@@ -81,10 +88,10 @@ public class Main {
         }
     }
 
-    //TODO 主方法启动主窗口
+    //主方法启动主窗口
     public static void main(String[] args) throws IOException {
 
-        //TODO 创建日志文件
+        //创建日志文件
         File temp = null;
         try {
             temp = File.createTempFile("temp-file-name", ".tmp");
@@ -149,7 +156,7 @@ public class Main {
         bg = new Background(bgf);
 
         WriteLog("Reading Config.json", "INFO");
-        //TODO 从JSON读取版本号
+        //从JSON读取版本号
         try {
             String StringConfig;
             String path = "Config.json";
@@ -197,8 +204,24 @@ public class Main {
             ReadImageFromStream(is, "MT-ICON");
             is.close();
         }
+        File MCP_Icon = new File(TempFolder + "/MT/Temp/MCP-ICON.jpg");
+        if (!MCP_Icon.exists()) {
+            InputStream is = Main.class.getClassLoader().getResourceAsStream("MCP-ICON.jpg");
+            assert is != null;
+            ReadImageFromStream(is, "MCP-ICON");
+            is.close();
+        }
+        File Configs = new File(TempFolder + "/MT/Configs.json");
+        if (!Configs.exists()) {
+            JSONObject config = new JSONObject();
+            JSONObject mmpconfig = new JSONObject();
+            mmpconfig.put("Messages", "Welcome To More Messages 2.0~");
+            mmp_Messages = "Welcome To More Messages 2.0~";
 
-        //TODO 启动主窗口
+        } else {
+
+        }
+        //启动主窗口
         Application.launch(MainWindow.class, args);
         writer.close();
     }

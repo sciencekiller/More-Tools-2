@@ -1,7 +1,7 @@
-//TODO More Messages窗口
+//More Messages窗口
 package com.mt.more_tools;
 
-//TODO 导入
+//导入
 
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -29,7 +29,7 @@ import static com.mt.more_tools.Main.*;
 public class MMPWindow {
     private static final int GLOBAL_HOT_KEY_ESC = 0;
 
-    //TODO 模拟键盘粘贴函数(By ChatGPT)
+    //模拟键盘粘贴函数(By ChatGPT)
     public static void Press_Ctrl_And_V() {
         Robot robot;
         try {
@@ -45,7 +45,7 @@ public class MMPWindow {
         Main.WriteLog("Ctrl_And_V pressed", "INFO", "mmp");
     }
 
-    //TODO 模拟键盘按下Enter(By ChatGPT)
+    //模拟键盘按下Enter(By ChatGPT)
     public static void Press_Enter() {
         Robot robot;
         try {
@@ -58,7 +58,7 @@ public class MMPWindow {
         WriteLog("Enter pressed", "INFO", "mmp");
     }
 
-    //TODO 模拟键盘按下Ctrl+Enter(By ChatGPT)
+    //模拟键盘按下Ctrl+Enter(By ChatGPT)
     public static void Press_Ctrl_And_Enter() {
         Robot robot;
         try {
@@ -74,7 +74,7 @@ public class MMPWindow {
         WriteLog("Ctrl_Enter pressed", "INFO", "mmp");
     }
 
-    //TODO 模拟键盘按下空格(By ChatGPT)
+    //模拟键盘按下空格(By ChatGPT)
     public static void Press_Space() {
         Robot robot;
         try {
@@ -88,7 +88,7 @@ public class MMPWindow {
         WriteLog("Space pressed", "INFO", "mmp");
     }
 
-    //TODO 写入字符串到剪切板函数(By ChatGPT)
+    //写入字符串到剪切板函数(By ChatGPT)
     public static void writeStringToClipboard(String str) {
         StringSelection stringSelection = new StringSelection(str);
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -96,23 +96,23 @@ public class MMPWindow {
         WriteLog("Write " + str + " to clipboard", "INFO", "mmp");
     }
 
-    //TODO 定义变量
+    //定义变量
     static String WordInputVariable = "";//文本输入变量
     static String NumberInputVariable = "";//次数输入变量
     static String SpacingInputVariable = "";//间隔输入变量
 
-    //TODO 生成窗口More Messages
+    //生成窗口More Messages
     public static void More_Messages() {
         WriteLog("Start more messages window", "INFO", "mmp");
-        //TODO 定义Stage
+        //定义Stage
         Stage MMPStage = new Stage();
 
-        //TODO 定义GridPane
+        //定义GridPane
         GridPane pane = new GridPane();
         pane.setVgap(15);
         pane.setHgap(15);
 
-        //TODO 定义标签
+        //定义标签
         Label WordLabel = new Label("请输入文本:     ");//文本
         WordLabel.setFont(Font.font("Kaiti", 14));
         Label NumberLabel = new Label("请输入次数:     ");//次数
@@ -126,19 +126,19 @@ public class MMPWindow {
         Label SpacingLabel = new Label("请输入间隔时间:");//间隔
         SpacingLabel.setFont(Font.font("Kaiti", 14));
 
-        //TODO 定义文本输入框
+        //定义文本输入框
         TextField WordInput = new TextField("Welcome To More Messages 2.0~");
         WordInput.setPrefWidth(400);
 
-        //TODO 定义次数输入框
+        //定义次数输入框
         TextField NumberInput = new TextField("100");
         NumberInput.setPrefWidth(400);
 
-        //TODO 定义间隔输入框
+        //定义间隔输入框
         TextField SpacingInput = new TextField("0.1");
         SpacingInput.setPrefWidth(400);
 
-        //TODO 定义文字模式下拉框
+        //定义文字模式下拉框
         ComboBox<String> WordModeComboBox = new ComboBox<>();//定义
         WordModeComboBox.getItems().addAll("文本框模式", "剪切板模式");//定义子成员
         WordModeComboBox.setPlaceholder(new Label("这里空空如也..."));//为空时显示
@@ -146,7 +146,7 @@ public class MMPWindow {
         WordModeComboBox.setValue("文本框模式");//设置默认值
         WordModeComboBox.setPrefWidth(400);//设置宽度400
 
-        //TODO 定义发送方式下拉框
+        //定义发送方式下拉框
         ComboBox<String> SendModeComboBox = new ComboBox<>();//定义
         SendModeComboBox.getItems().addAll("直列式", "波浪式", "随机式");//定义子成员
         SendModeComboBox.setPlaceholder(new Label("这里空空如也..."));//为空时显示
@@ -154,7 +154,7 @@ public class MMPWindow {
         SendModeComboBox.setValue("直列式");//设置默认值
         SendModeComboBox.setPrefWidth(400);//设置宽度400
 
-        //TODO 定义软件下拉框
+        //定义软件下拉框
         ComboBox<String> SoftwareComboBox = new ComboBox<>();//定义
         SoftwareComboBox.getItems().addAll("微信", "QQ", "钉钉", "其他按Enter发送的软件", "其他按Ctrl+Enter发送的软件");//定义子成员
         SoftwareComboBox.setPlaceholder(new Label("这里空空如也"));//为空时显示
@@ -162,7 +162,7 @@ public class MMPWindow {
         SoftwareComboBox.setValue("其他按Enter发送的软件");//设置默认值
         SoftwareComboBox.setPrefWidth(400);//设置宽度400
 
-        //TODO 定义按钮
+        //定义按钮
         Button ExitButton = new Button("退出");//退出按钮
         ExitButton.setPrefWidth(100);//设置宽度100
         ExitButton.setBackground(bg);
@@ -173,7 +173,7 @@ public class MMPWindow {
         AboutButton.setPrefWidth(100);//设置宽度100
         AboutButton.setBackground(bg);
 
-        //TODO 添加组件
+        //添加组件
         pane.add(WordLabel, 0, 0);
         pane.add(WordInput, 1, 0);
         pane.add(NumberLabel, 0, 1);
@@ -190,7 +190,7 @@ public class MMPWindow {
         pane.add(AboutButton, 1, 7);
         pane.add(ExitButton, 1, 8);
 
-        //TODO 创建开始按钮行动
+        //创建开始按钮行动
         StartButton.setOnAction(actionEvent -> {
             NumberInputVariable = NumberInput.getText();
             if (Objects.equals(NumberInputVariable, "")) {
@@ -243,19 +243,19 @@ public class MMPWindow {
             NewSendThread.start();
         });
 
-        //TODO 创建退出按钮行动
+        //创建退出按钮行动
         ExitButton.setOnAction(actionEvent -> {
             WriteLog("Exit more messages", "INFO", "mmp");
             MMPStage.close();
         });
 
-        //TODO 创建关于按钮行动
+        //创建关于按钮行动
         AboutButton.setOnAction(actionEvent -> {
             WriteLog("Show about alert", "INFO", "mmp");
             Alerts.MMPAboutAlert();
         });
 
-        //TODO 配置场景
+        //配置场景
         int img;
         Random random = new Random();
         img = random.nextInt(11);
@@ -273,14 +273,14 @@ public class MMPWindow {
         MMPScene.getStylesheets().add(url_css.toExternalForm());
         MMPStage.setScene(MMPScene);//设置场景
         MMPStage.setResizable(false);//设置不可调整大小
-        MMPStage.setTitle("More Messages Ver2.0.0");//设置标题
+        MMPStage.setTitle("More Messages");//设置标题
         WriteLog("Get more message icon", "INFO", "mmp");
         MMPStage.getIcons().add(new Image(TempFolder + "/MT/Temp/MMP-ICON.jpg"));
         WriteLog("Show more message window", "INFO", "mmp");
         MMPStage.show();//显示
     }
 
-    //TODO 打断线程函数
+    //打断线程函数
     public static void StopSend() {
         WriteLog("Ready to interrupt send", "WARNING", "mmp");
         ThreadGroup CurrentGroup = Thread.currentThread().getThreadGroup();
@@ -299,7 +299,7 @@ public class MMPWindow {
         }
     }
 
-    //TODO 发送函数
+    //发送函数
     public static void StartSend(String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
         WriteLog("Ready to send", "INFO", "mmp");
         if (Times == 0 || Spacing == 0) {
@@ -381,7 +381,7 @@ public class MMPWindow {
         WriteLog("Unregister key ESC:" + GLOBAL_HOT_KEY_ESC, "INFO", "mmp");
     }
 
-    //TODO 定义发送线程，保证UI线程不会堵塞
+    //定义发送线程，保证UI线程不会堵塞
     static class SendThread extends Thread {
         //定义变量
         String Messages;
