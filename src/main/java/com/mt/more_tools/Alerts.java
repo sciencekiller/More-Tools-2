@@ -76,4 +76,17 @@ public class Alerts {
         ErrorAlert.setHeaderText("日志文件位于缓存地址/MT/Logs");
         ErrorAlert.showAndWait();
     }
+
+    public static void KeyNotFoundAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("错误");
+        alert.setHeaderText("未找到键");
+        alert.setContentText("未在已知的摩斯密码原文中找到您输入的，请检查！");
+    }
+
+    public static void AddKeySucceed() {
+        Alert cp = new Alert(Alert.AlertType.INFORMATION);
+        cp.setTitle("成功");
+        cp.setHeaderText("成功添加映射！");
+    }
 }

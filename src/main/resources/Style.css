@@ -8,5 +8,6 @@
 
 .label {
     -fx-font-family: Kaiti;
+    -fx-font-size: 16px;
     -fx-text-fill: white;
 }

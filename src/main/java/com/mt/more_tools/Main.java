@@ -1,7 +1,7 @@
-//TODO 主类
+//主类
 package com.mt.more_tools;
 
-//TODO 导入
+//导入
 
 import javafx.application.Application;
 
@@ -18,13 +18,20 @@ import javafx.scene.paint.Paint;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class Main {
-    //TODO 定义变量
+    //定义变量
     public static Background bg;
     public static String MainVersion;//More Tools版本
     public static String MMPVersion;//More Messages Part版本
 
     static FileWriter writer = null;
     public static String TempFolder;
+
+    public static String mmp_Messages;
+    public static int mmp_Times;
+    public static float mmp_Spacing;
+    public static boolean mmp_WordMode;
+    public static int mmp_SendMode;
+    public static int mmp_Software;
 
     public static void WriteLog(Exception error, String log, String from) {
         String level = "ERROR";
@@ -81,10 +88,109 @@ public class Main {
         }
     }
 
-    //TODO 主方法启动主窗口
+    private static final String SPACE = "   ";
+
+    public static String formatJson(String json) {
+        StringBuilder result = new StringBuilder();
+
+        int length = json.length();
+        int number = 0;
+        char key;
+
+        // 遍历输入字符串。
+        for (int i = 0; i < length; i++) {
+            // 1、获取当前字符。
+            key = json.charAt(i);
+
+            // 2、如果当前字符是前方括号、前花括号做如下处理：
+            if ((key == '[') || (key == '{')) {
+                // （1）如果前面还有字符，并且字符为“：”，打印：换行和缩进字符字符串。
+                if ((i - 1 > 0) && (json.charAt(i - 1) == ':')) {
+                    result.append('\n');
+                    result.append(indent(number));
+                }
+
+                // （2）打印：当前字符。
+                result.append(key);
+
+                // （3）前方括号、前花括号，的后面必须换行。打印：换行。
+                result.append('\n');
+
+                // （4）每出现一次前方括号、前花括号；缩进次数增加一次。打印：新行缩进。
+                number++;
+                result.append(indent(number));
+
+                // （5）进行下一次循环。
+                continue;
+            }
+
+            // 3、如果当前字符是后方括号、后花括号做如下处理：
+            if ((key == ']') || (key == '}')) {
+                // （1）后方括号、后花括号，的前面必须换行。打印：换行。
+                result.append('\n');
+
+                // （2）每出现一次后方括号、后花括号；缩进次数减少一次。打印：缩进。
+                number--;
+                result.append(indent(number));
+
+                // （3）打印：当前字符。
+                result.append(key);
+
+                // （4）如果当前字符后面还有字符，并且字符不为“，”，打印：换行。
+                if (((i + 1) < length) && (json.charAt(i + 1) != ',')) {
+                    result.append('\n');
+                }
+
+                // （5）继续下一次循环。
+                continue;
+            }
+
+            // 4、如果当前字符是逗号。逗号后面换行，并缩进，不改变缩进次数。
+            if ((key == ',')) {
+                result.append(key);
+                result.append('\n');
+                result.append(indent(number));
+                continue;
+            }
+
+            // 5、打印：当前字符。
+            result.append(key);
+        }
+
+        return result.toString();
+    }
+
+    private static String indent(int number) {
+        return SPACE.repeat(Math.max(0, number));
+    }
+
+    public static String readJsonFile(String fileName) {
+        String jsonStr;
+        try {
+            File jsonFile = new File(fileName);
+            FileReader fileReader = new FileReader(jsonFile);
+
+            Reader reader = new InputStreamReader(new FileInputStream(jsonFile), StandardCharsets.UTF_8);
+            int ch;
+            StringBuilder sb = new StringBuilder();
+            while ((ch = reader.read()) != -1) {
+                sb.append((char) ch);
+            }
+            fileReader.close();
+            reader.close();
+            jsonStr = sb.toString();
+            return jsonStr;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    //主方法启动主窗口
     public static void main(String[] args) throws IOException {
 
-        //TODO 创建日志文件
+        //创建日志文件
         File temp = null;
         try {
             temp = File.createTempFile("temp-file-name", ".tmp");
@@ -149,7 +255,7 @@ public class Main {
         bg = new Background(bgf);
 
         WriteLog("Reading Config.json", "INFO");
-        //TODO 从JSON读取版本号
+        //从JSON读取版本号
         try {
             String StringConfig;
             String path = "Config.json";
@@ -197,8 +303,50 @@ public class Main {
             ReadImageFromStream(is, "MT-ICON");
             is.close();
         }
-
-        //TODO 启动主窗口
+        File MCP_Icon = new File(TempFolder + "/MT/Temp/MCP-ICON.jpg");
+        if (!MCP_Icon.exists()) {
+            InputStream is = Main.class.getClassLoader().getResourceAsStream("MCP-ICON.jpg");
+            assert is != null;
+            ReadImageFromStream(is, "MCP-ICON");
+            is.close();
+        }
+        File Configs = new File(TempFolder + "/MT/Configs.json");
+        if (!Configs.exists()) {
+            //String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software
+            JSONObject config = new JSONObject();
+            JSONObject mmp_config = new JSONObject();
+            mmp_config.put("Messages", "Welcome To More Messages 2.0~");
+            mmp_Messages = "Welcome To More Messages 2.0~";
+            mmp_config.put("Times", 100);
+            mmp_Times = 100;
+            mmp_config.put("Spacing", 0.1);
+            mmp_Spacing = 0.1f;
+            mmp_config.put("WordMode", true);
+            mmp_WordMode = true;
+            mmp_config.put("SendMode", 1);
+            mmp_SendMode = 1;
+            mmp_config.put("Software", 1);
+            mmp_Software = 1;
+            config.put("mmp", mmp_config);
+            String jsonString = formatJson(config.toString());
+            Writer write = new OutputStreamWriter(new FileOutputStream(Configs), StandardCharsets.UTF_8);
+            write.write(jsonString);
+            write.flush();
+            write.close();
+        } else {
+            String path = TempFolder + "/MT/Configs.json";
+            String s = readJsonFile(path);
+            JSONObject config = JSON.parseObject(s);
+            assert config != null;
+            JSONObject mmp_config = config.getJSONObject("mmp");
+            mmp_Messages = mmp_config.getString("Messages");
+            mmp_Times = mmp_config.getIntValue("Times");
+            mmp_Spacing = mmp_config.getFloatValue("Spacing");
+            mmp_WordMode = mmp_config.getBooleanValue("WordMode");
+            mmp_SendMode = mmp_config.getIntValue("SendMode");
+            mmp_Software = mmp_config.getIntValue("Software");
+        }
+        //启动主窗口
         Application.launch(MainWindow.class, args);
         writer.close();
     }
