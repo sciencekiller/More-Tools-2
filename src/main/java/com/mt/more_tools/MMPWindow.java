@@ -3,6 +3,8 @@ package com.mt.more_tools;
 
 //导入
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -23,6 +25,7 @@ import java.util.Objects;
 import java.util.Random;
 
 import com.melloware.jintellitype.*;
+import javafx.stage.StageStyle;
 
 import static com.mt.more_tools.Main.*;
 
@@ -185,13 +188,13 @@ public class MMPWindow {
         //定义按钮
         Button ExitButton = new Button("退出");//退出按钮
         ExitButton.setPrefWidth(100);//设置宽度100
-        ExitButton.setBackground(bg);
+        ExitButton.setBackground(bbg);
         Button StartButton = new Button("开始");//开始按钮
         StartButton.setPrefWidth(100);//设置宽度100
-        StartButton.setBackground(bg);
+        StartButton.setBackground(bbg);
         Button AboutButton = new Button("关于");//关于按钮
         AboutButton.setPrefWidth(100);//设置宽度100
-        AboutButton.setBackground(bg);
+        AboutButton.setBackground(bbg);
 
         //添加组件
         pane.add(WordLabel, 0, 0);
@@ -222,7 +225,7 @@ public class MMPWindow {
                 Times = Integer.parseInt(NumberInputVariable);
             } catch (Exception e) {
                 Alerts.InputErrorAlert();
-                e.printStackTrace();
+                WriteLog(e, "Read Error", "mmp");
             }
             SpacingInputVariable = SpacingInput.getText();
             if (Objects.equals(SpacingInputVariable, "")) {
@@ -234,7 +237,7 @@ public class MMPWindow {
                 Spacing = Float.parseFloat(SpacingInputVariable);
             } catch (Exception e) {
                 Alerts.InputErrorAlert();
-                e.printStackTrace();
+                WriteLog(e, "Read Error", "mmp");
             }
             boolean WordMode;
             WordMode = Objects.equals(WordModeComboBox.getValue(), "文本框模式");
@@ -266,6 +269,57 @@ public class MMPWindow {
         //创建退出按钮行动
         ExitButton.setOnAction(actionEvent -> {
             WriteLog("Exit more messages", "INFO", "mmp");
+            NumberInputVariable = NumberInput.getText();
+            if (Objects.equals(NumberInputVariable, "")) {
+                Alerts.NoNumberInputAlert();
+                return;
+            }
+            int Times = 0;
+            try {
+                Times = Integer.parseInt(NumberInputVariable);
+            } catch (Exception e) {
+                WriteLog(e, "Read Error", "mmp");
+            }
+            SpacingInputVariable = SpacingInput.getText();
+            if (Objects.equals(SpacingInputVariable, "")) {
+                return;
+            }
+            float Spacing = 0;
+            try {
+                Spacing = Float.parseFloat(SpacingInputVariable);
+            } catch (Exception e) {
+                Alerts.InputErrorAlert();
+                WriteLog(e, "Read Error", "mmp");
+            }
+            boolean WordMode;
+            WordMode = Objects.equals(WordModeComboBox.getValue(), "文本框模式");
+            int SendMode;
+            if (Objects.equals(SendModeComboBox.getValue(), "直列式")) {
+                SendMode = 1;
+            } else if (Objects.equals(SendModeComboBox.getValue(), "波浪式")) {
+                SendMode = 2;
+            } else {
+                SendMode = 3;
+            }
+
+            //"微信", "QQ", "钉钉", "其他按Enter发送的软件", "其他按Ctrl+Enter发送的软件"
+            int Software;
+            if (Objects.equals(SoftwareComboBox.getValue(), "微信")) {
+                Software = 1;
+            } else if (Objects.equals(SoftwareComboBox.getValue(), "QQ")) {
+                Software = 2;
+            } else if (Objects.equals(SoftwareComboBox.getValue(), "钉钉")) {
+                Software = 3;
+            } else if (Objects.equals(SoftwareComboBox.getValue(), "其他按Enter发送的软件")) {
+                Software = 4;
+            } else {
+                Software = 5;
+            }
+            WordInputVariable = WordInput.getText();
+            if (Objects.equals(WordInputVariable, "") && WordMode) {
+                return;
+            }
+            SaveAndClose(WordInputVariable, Times, Spacing, WordMode, SendMode, Software);
             MMPStage.close();
         });
 
@@ -276,20 +330,12 @@ public class MMPWindow {
         });
 
         //配置场景
-        int img;
-        Random random = new Random();
-        img = random.nextInt(11);
-        img++;
-        Image i = new Image(TempFolder + "/MT/Temp/background-" + img + ".jpg");
-        WriteLog("Get background image: background-" + img + ".jpg", "INFO", "mmp");
-        BackgroundImage bgi = new BackgroundImage(i, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        Background bg = new Background(bgi);
-        pane.setBackground(bg);
         WriteLog("Create more message scene", "INFO", "mmp");
-        Scene MMPScene = new Scene(pane, 600, 400);//定义场景
+        Main.GetBackground(pane);
         WriteLog("Get more message stylesheet", "INFO", "mmp");
         URL url_css = Main.class.getClassLoader().getResource("Style.css");
         assert url_css != null;
+        Scene MMPScene = new Scene(pane, 600, 400);
         MMPScene.getStylesheets().add(url_css.toExternalForm());
         MMPStage.setScene(MMPScene);//设置场景
         MMPStage.setResizable(false);//设置不可调整大小
@@ -317,6 +363,29 @@ public class MMPWindow {
                 WriteLog("Interrupted Send Thread", "SUCCESS", "mmp");
             }
         }
+    }
+
+    //保存退出函数
+    public static void SaveAndClose(String WordInputVariable, int Times, float Spacing, boolean WordMode, int SendMode, int Software) {
+//        mmp_Messages = mmp_config.getString("Messages");
+//        mmp_Times = mmp_config.getIntValue("Times");
+//        mmp_Spacing = mmp_config.getFloatValue("Spacing");
+//        mmp_WordMode = mmp_config.getBooleanValue("WordMode");
+//        mmp_SendMode = mmp_config.getIntValue("SendMode");
+//        mmp_Software = mmp_config.getIntValue("Software");
+        String path = TempFolder + "/MT/Configs.json";
+        String s = readJsonFile(path);
+        JSONObject config = JSON.parseObject(s);
+        assert config != null;
+        config.remove("mmp");
+        JSONObject mmp_config = new JSONObject();
+        mmp_config.put("Messages", WordInputVariable);
+        mmp_config.put("Times", Times);
+        mmp_config.put("Spacing", Spacing);
+        mmp_config.put("WordMode", WordMode);
+        mmp_config.put("SendMode", SendMode);
+        mmp_config.put("Software", Software);
+        config.put("mmp", mmp_config);
     }
 
     //发送函数

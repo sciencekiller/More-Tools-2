@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import javafx.scene.control.Label;
 
 import java.net.URL;
-import java.util.Random;
 
 import static com.mt.more_tools.Main.*;
 
@@ -51,15 +50,7 @@ public class MCPWindow {
         pane.getChildren().addAll(Before_Word_Label, Before_Word_Input, Add_Dot_Button, Add_Line_Button, Delete_Button, Conv_Button, After_Word_Label, After_Word_Output);
 
         //配置场景
-        int img;
-        Random random = new Random();
-        img = random.nextInt(11);
-        img++;
-        Image i = new Image(TempFolder + "/MT/Temp/background-" + img + ".jpg");
-        WriteLog("Get background image: background-" + img + ".jpg", "INFO", "mcp");
-        BackgroundImage bgi = new BackgroundImage(i, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        Background bg = new Background(bgi);
-        pane.setBackground(bg);
+        GetBackground(pane);
         WriteLog("Create morse code scene", "INFO", "mcp");
         Scene MCPScene = new Scene(pane, 600, 400);
         WriteLog("Get morse code stylesheet", "INFO", "mcp");

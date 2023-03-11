@@ -4,9 +4,11 @@ package com.mt.more_tools;
 //导入
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
@@ -14,8 +16,10 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import java.awt.*;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Random;
 
 import static com.mt.more_tools.Main.*;
@@ -24,7 +28,7 @@ import static com.mt.more_tools.Main.*;
 public class MainWindow extends Application {
     //重写start方法，生成窗口
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primaryStage) throws IOException {
         WriteLog("Start main window", "INFO");
         //定义GridPane
         GridPane pane = new GridPane();
@@ -49,16 +53,16 @@ public class MainWindow extends Application {
         //定义按钮
         Button StartButton = new Button("打开");//打开按钮
         StartButton.setPrefWidth(100);//设置宽度100
-        StartButton.setBackground(bg);
+        StartButton.setBackground(bbg);
         Button ExitButton = new Button("退出");//退出按钮
         ExitButton.setPrefWidth(100);//设置宽度100
-        ExitButton.setBackground(bg);
+        ExitButton.setBackground(bbg);
         Button AboutButton = new Button("关于");//关于按钮
         AboutButton.setPrefWidth(100);//设置宽度100
-        AboutButton.setBackground(bg);
+        AboutButton.setBackground(bbg);
         Button WebsiteButton = new Button("官网");//官网按钮
         WebsiteButton.setPrefWidth(100);//设置宽度100
-        WebsiteButton.setBackground(bg);
+        WebsiteButton.setBackground(bbg);
 
         //添加组件
         pane.add(WelcomeLabel, 0, 0);
@@ -104,14 +108,8 @@ public class MainWindow extends Application {
 
         //创建场景
         WriteLog("Creat primary scene", "INFO");
-        Scene primaryScene = new Scene(pane, 600, 400);//定义场景
-        Random random = new Random();
-        int img = random.nextInt(11);
-        img++;
-        Image i = new Image(TempFolder + "/MT/Temp/background-" + img + ".jpg");
-        BackgroundImage bgi = new BackgroundImage(i, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        Background bg = new Background(bgi);
-        pane.setBackground(bg);
+        GetBackground(pane);
+        Scene primaryScene = new Scene(pane, 600, 400);
         URL url_css = Main.class.getClassLoader().getResource("Style.css");
         assert url_css != null;
         primaryScene.getStylesheets().add(url_css.toExternalForm());
@@ -124,6 +122,7 @@ public class MainWindow extends Application {
         WriteLog("Show main window", "INFO");
         primaryStage.show();//显示
     }
+
 
     //构建启动More Messages方法
     public void RunMoreMessages() {

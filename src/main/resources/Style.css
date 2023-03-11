@@ -1,13 +1,25 @@
 .button {
     -fx-font-size: 16px;
     -fx-font-family: Kaiti;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
     -fx-min-height: 30;
     -fx-min-width: 80;
 }
 
 .label {
     -fx-font-family: Kaiti;
+    -fx-font-size: 18px;
+    -fx-text-fill: black;
+}
+
+.combo-box {
+    -fx-font-family: Kaiti;
+    -fx-font-size: 14px;
+    -fx-text-fill: black;
+}
+
+.text-area {
+    -fx-font-family: Kaiti;
     -fx-font-size: 16px;
-    -fx-text-fill: white;
+    -fx-text-fill: black;
 }

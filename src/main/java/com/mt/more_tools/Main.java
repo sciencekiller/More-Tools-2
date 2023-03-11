@@ -12,14 +12,14 @@ import java.util.Date;
 import java.util.Random;
 
 import com.alibaba.fastjson2.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
 public class Main {
     //定义变量
-    public static Background bg;
+    public static Background bbg;
     public static String MainVersion;//More Tools版本
     public static String MMPVersion;//More Messages Part版本
 
@@ -186,6 +186,23 @@ public class Main {
         }
     }
 
+    public static void GetBackground(GridPane pane) {
+        Random random = new Random();
+        int imgnum = random.nextInt(11);
+        imgnum++;
+        BackgroundImage bgf = new BackgroundImage(new Image(TempFolder + "/MT/Temp/Background-" + imgnum + ".jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background bg = new Background(bgf);
+        pane.setBackground(bg);
+    }
+
+    public static void GetBackground(FlowPane pane) {
+        Random random = new Random();
+        int imgnum = random.nextInt(11);
+        imgnum++;
+        BackgroundImage bgf = new BackgroundImage(new Image(TempFolder + "/MT/Temp/Background-" + imgnum + ".jpg"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        Background bg = new Background(bgf);
+        pane.setBackground(bg);
+    }
 
     //主方法启动主窗口
     public static void main(String[] args) throws IOException {
@@ -228,32 +245,6 @@ public class Main {
         if (mkfil) WriteLog("Make file successfully", "SUCCESS");
         else WriteLog("File exists", "INFO");
 
-        //红色
-        String red;
-        //绿色
-        String green;
-        //蓝色
-        String blue;
-        //生成随机对象
-        Random random = new Random();
-        //生成红色颜色代码
-        red = Integer.toHexString(random.nextInt(256)).toUpperCase();
-        //生成绿色颜色代码
-        green = Integer.toHexString(random.nextInt(256)).toUpperCase();
-        //生成蓝色颜色代码
-        blue = Integer.toHexString(random.nextInt(256)).toUpperCase();
-
-        //判断红色代码的位数
-        red = red.length() == 1 ? "0" + red : red;
-        //判断绿色代码的位数
-        green = green.length() == 1 ? "0" + green : green;
-        //判断蓝色代码的位数
-        blue = blue.length() == 1 ? "0" + blue : blue;
-        String color = "#" + red + green + blue;
-        WriteLog("Get button color:" + color, "INFO");
-        BackgroundFill bgf = new BackgroundFill(Paint.valueOf(color), null, null);
-        bg = new Background(bgf);
-
         WriteLog("Reading Config.json", "INFO");
         //从JSON读取版本号
         try {
@@ -273,17 +264,14 @@ public class Main {
             MainVersion = (String) Config.get("Version");
             MMPVersion = (String) Config.get("MMPVersion");
         } catch (IOException e) {
-            e.printStackTrace();
+            WriteLog(e, "Read file error");
         }
         WriteLog("Main Version:" + MainVersion, "INFO");
         WriteLog("MMP Version:" + MMPVersion, "INFO");
-
         for (int i = 1; i <= 11; i++) {
-            String Temp_Path = TempFolder + "/MT/Temp/background-" + i + ".jpg";
-            String path = "background-" + i + ".jpg";
-            File imgfile = new File(Temp_Path);
-            if (!imgfile.exists()) {
-                InputStream is = Main.class.getClassLoader().getResourceAsStream(path);
+            File BackgroundFile = new File(TempFolder + "/MT/Temp/background-" + i + ".jpg");
+            if (!BackgroundFile.exists()) {
+                InputStream is = Main.class.getClassLoader().getResourceAsStream("background-" + i + ".jpg");
                 assert is != null;
                 ReadImageFromStream(is, "background-" + i);
                 is.close();
@@ -310,6 +298,12 @@ public class Main {
             ReadImageFromStream(is, "MCP-ICON");
             is.close();
         }
+        String bg_color = "#e236ff";
+        String bbg_color = "#27f1ff";
+        WriteLog("Get Background color:" + bg_color, "INFO");
+        WriteLog("Get button color:" + bbg_color, "INFO");
+        BackgroundFill bbgf = new BackgroundFill(Paint.valueOf(bbg_color), null, null);
+        bbg = new Background(bbgf);
         File Configs = new File(TempFolder + "/MT/Configs.json");
         if (!Configs.exists()) {
             //String Messages, int Times, float Spacing, boolean WordMode, int SendMode, int Software
